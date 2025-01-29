@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="email"], input[type="tel"], select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .membership-section {
+            display: none;
+        }
+        #membership-yes:checked ~ .membership-section {
+            display: block;
+        }
+        #membership-no:checked ~ .free-text {
+            display: block;
+        }
+        .free-text {
+            display: none;
+            font-size: 14px;
+            color: #555;
+            margin-top: 10px;
+        }
+        .user-dashboard {
+            display: none;
+            margin-top: 20px;
+        }
+        .user-dashboard p {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .user-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #007bff;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .user-dashboard.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Form</h1>
+        <form id="user-form">
+            <div class="form-group">
+                <label for="fname">First Name</label>
+                <input type="text" id="fname" name="fname" placeholder="Enter your first name">
+            </div>
+            <div class="form-group">
+                <label for="lname">Last Name</label>
+                <input type="text" id="lname" name="lname" placeholder="Enter your last name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="contact">Contact</label>
+                <input type="tel" id="contact" name="contact" placeholder="Enter your contact number">
+            </div>
+            <div class="form-group">
+                <label>Do you want a membership?</label>
+                <input type="radio" id="membership-yes" name="membership-choice"> Yes
+                <input type="radio" id="membership-no" name="membership-choice" checked> No
+            </div>
+            <div class="membership-section">
+                <div class="form-group">
+                    <label for="membership">Choose Membership Type</label>
+                    <select id="membership" name="membership">
+                        <option value="3-month">3-Month Plan - 20% Discount</option>
+                        <option value="1-month">1-Month Plan - 10% Discount</option>
+                    </select>
+                </div>
+            </div>
+            <p class="free-text">You have chosen the free plan.</p>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+    <div class="user-icon" id="user-icon"></div>
+
+    <div class="user-dashboard" id="user-dashboard">
+        <p id="dashboard-name"></p>
+        <p id="dashboard-email"></p>
+        <p id="dashboard-contact"></p>
+        <p id="dashboard-membership"></p>
+    </div>
+
+    <script>
+        const membershipYes = document.getElementById('membership-yes');
+        const membershipNo = document.getElementById('membership-no');
+        const membershipSection = document.querySelector('.membership-section');
+        const freeText = document.querySelector('.free-text');
+        const userForm = document.getElementById('user-form');
+        const userIcon = document.getElementById('user-icon');
+        const userDashboard = document.getElementById('user-dashboard');
+        const dashboardName = document.getElementById('dashboard-name');
+        const dashboardEmail = document.getElementById('dashboard-email');
+        const dashboardContact = document.getElementById('dashboard-contact');
+        const dashboardMembership = document.getElementById('dashboard-membership');
+
+        // Show or hide membership section based on selection
+        membershipYes.addEventListener('change', function() {
+            if (membershipYes.checked) {
+                membershipSection.style.display = 'block';
+                freeText.style.display = 'none';
+            }
+        });
+
+        membershipNo.addEventListener('change', function() {
+            if (membershipNo.checked) {
+                membershipSection.style.display = 'none';
+                freeText.style.display = 'block';
+            }
+        });
+
+        // Handle form submission
+        userForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const fname = document.getElementById('fname').value;
+            const lname = document.getElementById('lname').value;
+            const email = document.getElementById('email').value;
+            const contact = document.getElementById('contact').value;
+            const membershipType = membershipYes.checked ? document.getElementById('membership').value : 'Free Plan';
+
+            // Save to local storage or variables (for simplicity, using localStorage here)
+            localStorage.setItem('userName', fname + ' ' + lname);
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userContact', contact);
+            localStorage.setItem('userMembership', membershipType);
+
+            // Reset the form
+            userForm.reset();
+        });
+
+        // Show the user dashboard when user icon is clicked
+        userIcon.addEventListener('click', function() {
+            // Retrieve data from localStorage
+            const name = localStorage.getItem('userName');
+            const email = localStorage.getItem('userEmail');
+            const contact = localStorage.getItem('userContact');
+            const membership = localStorage.getItem('userMembership');
+
+            // Display the data in the dashboard
+            dashboardName.innerText =`Name: ${name}`;
+            dashboardEmail.innerText =` Email: ${email}`;
+            dashboardContact.innerText = `Contact: ${contact}`;
+            dashboardMembership.innerText =` Membership: ${membership}`;
+
+            // Toggle the dashboard visibility
+            userDashboard.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
