@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>^Teechspire Khaja</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .dashboard {
+            padding: 20px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .stat-box {
+            width: 45%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .chart-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        canvas {
+            max-width: 100%;
+            height: 300px;
+        }
+        .order-button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>Canteen Manager Dashboard</h1>
+
+        <!-- Stats Section -->
+        <div class="stats">
+            <div class="stat-box">
+                <h3>Total Orders</h3>
+                <p id="total-orders">0</p>
+            </div>
+            <div class="stat-box">
+                <h3>Total Revenue</h3>
+                <p id="total-revenue">$0.00</p>
+            </div>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="chart-container">
+            <h3>Monthly Orders</h3>
+            <canvas id="orderChart"></canvas>
+        </div>
+
+        <!-- Simulate New Order Button -->
+        <button class="order-button" onclick="placeOrder()">Simulate New Order</button>
+    </div>
+
+    <script>
+        // Simulate initial order and revenue data
+        let totalOrders = 0;
+        let totalRevenue = 0;
+
+        // Order data for monthly chart (e.g., 30 days)
+        let monthlyOrders = Array(30).fill(0);
+
+        // Create Chart.js chart
+        const ctx = document.getElementById('orderChart').getContext('2d');
+const orderChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`), // Corrected template string
+        datasets: [{
+            label: 'Orders per Day',
+            data: monthlyOrders,
+            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+
+        // Function to simulate placing a new order
+        function placeOrder() {
+            const orderAmount = (Math.random() * (20 - 5) + 5).toFixed(2);  // Random amount between $5 and $20
+            const orderDay = Math.floor(Math.random() * 30);  // Random day (0 to 29)
+
+            // Increment total orders and revenue
+            totalOrders++;
+            totalRevenue = (parseFloat(totalRevenue) + parseFloat(orderAmount)).toFixed(2);
+
+            // Update the stats
+            document.getElementById('total-orders').textContent = totalOrders;
+            document.getElementById('total-revenue').textContent =` Rs${totalRevenue}`;
+
+            // Update the monthly orders chart
+            monthlyOrders[orderDay]++;
+            orderChart.update();
+        }
+    </script>
+</body>
+</html>

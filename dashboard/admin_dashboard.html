@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        .analytics { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .card { padding: 15px; border: 1px solid #ccc; border-radius: 5px; width: 45%; }
+        form { margin-bottom: 20px; }
+        input, textarea, button { display: block; width: 100%; margin-top: 10px; padding: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard</h1>
+        <div class="analytics">
+            <div class="card">Total Items: <span id="total-items">0</span></div>
+            <div class="card">Total Price: $<span id="total-price">0.00</span></div>
+        </div>
+        
+        <h2>Add Item</h2>
+        <form id="item-form">
+            <input type="text" id="name" placeholder="Item Name" required>
+            <input type="number" id="price" placeholder="Price" required>
+            <textarea id="description" placeholder="Description" required></textarea>
+            <button type="submit">Add Item</button>
+        </form>
+        
+        <h2>Report</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody id="item-list"></tbody>
+        </table>
+    </div>
+    
+    <script>
+        document.getElementById('item-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            let name = document.getElementById('name').value.trim();
+            let price = parseFloat(document.getElementById('price').value);
+            let description = document.getElementById('description').value.trim();
+            
+            if (!name || isNaN(price) || !description) {
+                alert('Please enter valid details.');
+                return;
+            }
+            
+            let table = document.getElementById('item-list');
+            let row = document.createElement('tr');
+            row.innerHTML = `<td>${name}</td><td>$${price.toFixed(2)}</td><td>${description}</td>`;
+            table.appendChild(row);
+            
+            let totalItems = document.getElementById('total-items');
+            let totalPrice = document.getElementById('total-price');
+            
+            totalItems.innerText = parseInt(totalItems.innerText) + 1;
+            totalPrice.innerText = (parseFloat(totalPrice.innerText) + price).toFixed(2);
+            
+            document.getElementById('item-form').reset();
+        });
+    </script>
+</body>
+</html>
